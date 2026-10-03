@@ -12,7 +12,7 @@ type KoeContextValue = {
   open: (panel: PanelName | null, tab?: SettingsTab) => void;
 };
 
-const KoeContext = createContext<KoeContextValue | null>(null);
+export const KoeContext = createContext<KoeContextValue | null>(null);
 
 export function useKoe() {
   const value = useContext(KoeContext);

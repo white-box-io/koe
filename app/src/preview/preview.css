@@ -1,0 +1,26 @@
+html,
+body,
+#root {
+  overflow: visible;
+  background: transparent;
+}
+
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 8px 28px;
+  padding: 24px;
+  width: 1800px;
+}
+
+.tile {
+  margin: 0;
+}
+
+.tile figcaption {
+  padding-left: 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: oklch(0.3 0.05 285);
+}
