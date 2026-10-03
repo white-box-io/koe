@@ -1,0 +1,45 @@
+.error {
+  display: flex;
+  gap: 10px;
+}
+
+.error__badge {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+}
+
+.error__badge--amber {
+  color: var(--amber);
+  background: oklch(0.83 0.15 85 / 0.15);
+}
+
+.error__badge--red {
+  color: var(--red);
+  background: oklch(0.71 0.17 22 / 0.15);
+}
+
+.error__text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.error__title {
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+.error__body {
+  font-size: 11.5px;
+  line-height: 16px;
+  color: var(--muted);
+}
+
+.error__actions {
+  display: flex;
+  gap: 6px;
+}

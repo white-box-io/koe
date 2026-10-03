@@ -1,0 +1,70 @@
+.panel {
+  padding: 2px;
+  border-radius: calc(var(--radius-panel) + 2px);
+  background: linear-gradient(180deg, var(--bezel-top), var(--bezel-mid) 45%, var(--bezel-bottom));
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.4),
+    inset 0 -1px 0 oklch(0 0 0 / 0.3),
+    var(--shadow);
+  animation: panel-in 280ms cubic-bezier(0.34, 1.4, 0.64, 1);
+  transition: opacity 500ms ease;
+}
+
+.panel--fading {
+  opacity: 0;
+}
+
+.panel__glass {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border-radius: var(--radius-panel);
+  background:
+    linear-gradient(180deg, var(--glass-shine-top), var(--glass-shine-bottom)),
+    var(--glass);
+  box-shadow: inset 0 0 0 1px var(--glass-edge);
+}
+
+.panel__glass--tight {
+  gap: 1px;
+  padding: 6px;
+}
+
+.panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.panel__title {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.panel__section-label {
+  padding: 2px 0;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+}
+
+.stage--up .panel {
+  animation-name: panel-in-up;
+}
+
+@keyframes panel-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.97);
+  }
+}

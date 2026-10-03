@@ -1,0 +1,125 @@
+.setup__count {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--faint);
+}
+
+.setup__hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 4px 0;
+  text-align: center;
+}
+
+.setup__hero-title {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.setup__hero-body,
+.setup__hint {
+  font-size: 11.5px;
+  line-height: 16px;
+  color: var(--muted);
+}
+
+.setup__status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.setup__status--good {
+  color: var(--green);
+}
+
+.setup__big-key {
+  display: flex;
+  justify-content: center;
+  padding: 6px 0 2px;
+}
+
+.setup__big-keycap {
+  display: inline-flex;
+  align-items: center;
+  height: 46px;
+  padding: 0 22px;
+  border-radius: 11px;
+  font-size: 15px;
+  font-weight: 600;
+  background: oklch(1 0 0 / 0.1);
+  box-shadow:
+    inset 0 0 0 1.5px var(--accent),
+    inset 0 -3px 0 oklch(0 0 0 / 0.5),
+    0 0 18px -4px var(--accent-deep);
+}
+
+.setup__keys {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.setup__or {
+  font-size: 11px;
+  color: var(--faint);
+}
+
+.setup__download {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.setup__download-top {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.setup__done {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--green);
+}
+
+.setup__percent {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.setup__track {
+  height: 4px;
+  border-radius: 2px;
+  background: oklch(1 0 0 / 0.08);
+  overflow: hidden;
+}
+
+.setup__fill {
+  display: block;
+  height: 100%;
+  border-radius: 2px;
+  background: linear-gradient(90deg, oklch(0.8 0.1 295), var(--accent-deep));
+  transition: width 400ms ease;
+}
+
+.setup__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 4px;
+}
+
+.setup__buttons {
+  display: flex;
+  gap: 6px;
+}

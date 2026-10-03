@@ -1,0 +1,34 @@
+:root {
+  --font: "Inter", "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+
+  --text: oklch(0.96 0.01 290);
+  --text-soft: oklch(0.88 0.02 290);
+  --muted: oklch(0.72 0.03 290);
+  --faint: oklch(0.55 0.03 290);
+
+  --glass: oklch(0.21 0.02 285 / 0.92);
+  --glass-shine-top: oklch(1 0 0 / 0.1);
+  --glass-shine-bottom: oklch(1 0 0 / 0.02);
+  --glass-edge: oklch(1 0 0 / 0.08);
+  --surface: oklch(1 0 0 / 0.05);
+  --surface-strong: oklch(1 0 0 / 0.09);
+  --line: oklch(1 0 0 / 0.08);
+
+  --bezel-top: oklch(0.55 0.03 285);
+  --bezel-mid: oklch(0.36 0.03 285);
+  --bezel-bottom: oklch(0.25 0.02 285);
+
+  --accent: oklch(0.72 0.16 295);
+  --accent-deep: oklch(0.58 0.21 290);
+  --accent-soft: oklch(0.84 0.08 295);
+  --coral: oklch(0.72 0.17 15);
+  --blue: oklch(0.74 0.13 250);
+  --green: oklch(0.79 0.15 165);
+  --amber: oklch(0.83 0.15 85);
+  --red: oklch(0.71 0.17 22);
+
+  --radius-pill: 13px;
+  --radius-panel: 16px;
+  --radius-control: 9px;
+  --shadow: 0 14px 30px -10px oklch(0 0 0 / 0.45);
+}

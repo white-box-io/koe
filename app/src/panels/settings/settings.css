@@ -1,0 +1,263 @@
+.settings__close {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  color: var(--faint);
+}
+
+.settings__close:hover {
+  color: var(--text);
+  background: var(--surface-strong);
+}
+
+.settings__body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.settings__link {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--accent-soft);
+}
+
+.settings__note {
+  padding-top: 4px;
+  font-size: 11px;
+  line-height: 15px;
+  color: var(--faint);
+}
+
+.settings__note--center {
+  text-align: center;
+}
+
+.tabs {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 10px;
+  background: oklch(0 0 0 / 0.25);
+}
+
+.tabs__tab {
+  display: grid;
+  flex: 1;
+  place-items: center;
+  height: 28px;
+  border-radius: 8px;
+  color: var(--faint);
+}
+
+.tabs__tab:hover {
+  color: var(--muted);
+}
+
+.tabs__tab--on {
+  color: white;
+  background: oklch(1 0 0 / 0.12);
+}
+
+.chips {
+  display: flex;
+  gap: 5px;
+  padding-bottom: 4px;
+}
+
+.chip {
+  height: 22px;
+  padding: 0 9px;
+  border-radius: 11px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted);
+  background: var(--surface);
+}
+
+.chip--on {
+  color: white;
+  background: var(--accent-deep);
+}
+
+.voices__scroll {
+  max-height: 232px;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.voices {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.voice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px 7px 8px;
+  border-radius: 10px;
+  background: oklch(1 0 0 / 0.02);
+  box-shadow: inset 0 0 0 1px oklch(1 0 0 / 0.05);
+  cursor: pointer;
+}
+
+.voice:hover {
+  background: var(--surface);
+}
+
+.voice--on {
+  background: var(--surface-strong);
+  box-shadow: inset 0 0 0 1px oklch(0.72 0.16 295 / 0.8);
+}
+
+.voice__play {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: oklch(1 0 0 / 0.1);
+}
+
+.voice__play--on {
+  background: var(--accent-deep);
+}
+
+.voice__text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.voice__name {
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.voice__meta {
+  font-size: 10.5px;
+  color: var(--muted);
+}
+
+.voice__check {
+  color: var(--accent);
+}
+
+.character-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px oklch(1 0 0 / 0.06);
+}
+
+.character-preview__info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.character-preview__name {
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+.character-preview__faces {
+  display: flex;
+  gap: 4px;
+}
+
+.character-preview__face {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  background: var(--surface);
+}
+
+.characters {
+  display: flex;
+  gap: 6px;
+  padding-top: 6px;
+}
+
+.character {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 2px 6px;
+  border-radius: 10px;
+  background: oklch(1 0 0 / 0.02);
+  box-shadow: inset 0 0 0 1px oklch(1 0 0 / 0.05);
+}
+
+.character--on {
+  background: var(--surface-strong);
+  box-shadow: inset 0 0 0 1px oklch(0.72 0.16 295 / 0.85);
+}
+
+.character__locked {
+  opacity: 0.4;
+  filter: grayscale(0.6);
+}
+
+.character__label {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--faint);
+}
+
+.character__label--on {
+  color: var(--accent);
+}
+
+.about {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 0 8px;
+}
+
+.about__name {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.about__version {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.about__link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 34px;
+  padding: 0 4px;
+  border-radius: 8px;
+  color: var(--muted);
+}
+
+.about__link span {
+  flex: 1;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-soft);
+  text-align: left;
+}
+
+.about__link:hover {
+  background: var(--surface);
+}

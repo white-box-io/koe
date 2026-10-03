@@ -1,0 +1,55 @@
+.sessions__label {
+  padding: 4px 8px 4px;
+}
+
+.session {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  text-align: left;
+}
+
+.session:hover,
+.session--on {
+  background: var(--surface-strong);
+}
+
+.session__dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.session__dot--violet { background: var(--accent); }
+.session__dot--green { background: var(--green); }
+.session__dot--amber { background: var(--amber); }
+.session__dot--grey { background: var(--faint); }
+
+.session__text {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.session__name {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.session__meta {
+  overflow: hidden;
+  font-size: 11px;
+  color: var(--muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.session__check {
+  flex: none;
+  color: var(--accent);
+}

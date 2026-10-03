@@ -1,0 +1,47 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  overflow: hidden;
+  font-family: var(--font);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+  cursor: default;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.stage {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+}
+
+.stage--up {
+  flex-direction: column-reverse;
+}
+
+.stage--right {
+  align-items: flex-end;
+}
+
+.stage--left {
+  align-items: flex-start;
+}
