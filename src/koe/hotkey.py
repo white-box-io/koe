@@ -5,7 +5,9 @@ VIRTUAL_KEY_CODES = {
     "left ctrl": 0xA2,
     "right alt": 0xA5,
     "right shift": 0xA1,
+    "f8": 0x77,
     "f9": 0x78,
+    "f10": 0x79,
 }
 
 
