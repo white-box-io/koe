@@ -1,4 +1,5 @@
 mod engine;
+mod pointer;
 mod settings;
 mod transcript;
 
@@ -29,7 +30,11 @@ fn get_settings(state: State<AppState>) -> Settings {
 fn save_settings(app: AppHandle, state: State<AppState>, settings: Settings) {
     let previous = state.settings.lock().unwrap().clone();
     settings::save(&settings);
-    state.engine.send(merge_command("config", settings.engine_config()));
+    if previous.device != settings.device {
+        state.engine.restart(app.clone(), settings.engine_config());
+    } else {
+        state.engine.send(merge_command("config", settings.engine_config()));
+    }
     if previous.follow_session != settings.follow_session {
         *state.follower.choice.lock().unwrap() = settings.follow_session.clone();
     }
@@ -42,6 +47,12 @@ fn save_settings(app: AppHandle, state: State<AppState>, settings: Settings) {
 #[tauri::command]
 fn engine_command(state: State<AppState>, command: Value) {
     state.engine.send(command);
+}
+
+#[tauri::command]
+fn restart_engine(app: AppHandle, state: State<AppState>) {
+    let config = state.settings.lock().unwrap().engine_config();
+    state.engine.restart(app, config);
 }
 
 #[tauri::command]
@@ -111,6 +122,7 @@ pub fn run() {
                     let _ = event_handle.emit("claude", event);
                 });
 
+                pointer::watch_outside_clicks(handle.clone());
                 app.manage(AppState { settings: Mutex::new(settings.clone()), engine, follower });
                 Ok(())
             }
@@ -119,6 +131,7 @@ pub fn run() {
             get_settings,
             save_settings,
             engine_command,
+            restart_engine,
             list_sessions,
             open_file,
             open_sound_settings,

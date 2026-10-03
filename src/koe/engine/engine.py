@@ -110,8 +110,10 @@ class Engine:
         emit("loading", stage="almost ready", progress=0.95)
 
     def _start_microphone(self) -> None:
+        from koe.engine.focus import start_tracking
         from koe.engine.microphone import Microphone
 
+        start_tracking()
         self.microphone = Microphone(self._on_press, self._on_release, self._on_mic_level)
         self.microphone.hotkey = self.settings["hotkey"]
         self.microphone.device_index = self.settings["mic_index"]
@@ -138,8 +140,10 @@ class Engine:
             return
         emit("heard", text=text)
         if self.settings["type_into_claude"]:
+            from koe.engine.focus import focus_claude_window
             from koe.prompt_typer import type_into_focused_window
 
+            focus_claude_window()
             type_into_focused_window(text)
 
     def _on_mic_level(self, level: float) -> None:

@@ -9,7 +9,9 @@ export const saveSettings = (settings: Settings) => invoke("save_settings", { se
 export const sendToEngine = (cmd: string, fields: Record<string, unknown> = {}) =>
   invoke("engine_command", { command: { cmd, ...fields } });
 
-export const listSessions = () => invoke<SessionInfo[]>("list_sessions");
+export const restartEngine = () => invoke("restart_engine");
+
+export const listSessions =() => invoke<SessionInfo[]>("list_sessions");
 
 export const openFile = (path: string, snippet?: string) => invoke("open_file", { path, snippet });
 

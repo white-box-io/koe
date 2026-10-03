@@ -81,7 +81,7 @@ function withError(errors: KoeError[], error: KoeError) {
 function engineReducer(state: KoeState, event: Record<string, unknown>): KoeState {
   switch (event.event) {
     case "loading":
-      return { ...state, progress: event.progress as number, stage: event.stage as string };
+      return { ...state, engineReady: false, progress: event.progress as number, stage: event.stage as string };
     case "device":
       return { ...state, device: event.device as string, gpu: (event.gpu as string) ?? null };
     case "download":

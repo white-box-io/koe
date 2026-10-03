@@ -1,9 +1,10 @@
-use serde_json::Value;
+use serde_json::{json, Value};
 use std::io::{BufRead, BufReader, Write};
 use std::os::windows::process::CommandExt;
 use std::path::PathBuf;
 use std::process::{Child, ChildStdin, Command, Stdio};
-use std::sync::Mutex;
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::{Arc, Mutex};
 use std::thread;
 use tauri::{AppHandle, Emitter};
 
@@ -17,17 +18,20 @@ pub fn project_root() -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("..").join("..")
 }
 
+/// The Python voice engine runs as a hidden child process and talks JSON lines.
 pub struct Engine {
     stdin: Mutex<Option<ChildStdin>>,
     child: Mutex<Option<Child>>,
+    stopping: Arc<AtomicBool>,
 }
 
 impl Engine {
     pub fn new() -> Self {
-        Self { stdin: Mutex::new(None), child: Mutex::new(None) }
+        Self { stdin: Mutex::new(None), child: Mutex::new(None), stopping: Arc::new(AtomicBool::new(false)) }
     }
 
     pub fn start(&self, app: AppHandle, config: Value) {
+        self.stopping.store(false, Ordering::SeqCst);
         let root = project_root();
         let python = root.join(".venv").join("Scripts").join("python.exe");
         let spawned = Command::new(python)
@@ -42,9 +46,7 @@ impl Engine {
         let mut child = match spawned {
             Ok(child) => child,
             Err(error) => {
-                let _ = app.emit("engine", serde_json::json!({
-                    "event": "error", "kind": "engine_crashed", "message": error.to_string()
-                }));
+                report_crash(&app, &format!("Couldn't start the voice engine: {error}"));
                 return;
             }
         };
@@ -53,11 +55,15 @@ impl Engine {
         *self.stdin.lock().unwrap() = child.stdin.take();
         *self.child.lock().unwrap() = Some(child);
 
+        let stopping = self.stopping.clone();
         thread::spawn(move || {
             for line in BufReader::new(stdout).lines().map_while(Result::ok) {
                 if let Ok(event) = serde_json::from_str::<Value>(&line) {
                     let _ = app.emit("engine", event);
                 }
+            }
+            if !stopping.load(Ordering::SeqCst) {
+                report_crash(&app, "The voice engine stopped unexpectedly.");
             }
         });
     }
@@ -70,9 +76,22 @@ impl Engine {
     }
 
     pub fn stop(&self) {
-        self.send(serde_json::json!({ "cmd": "quit" }));
+        self.stopping.store(true, Ordering::SeqCst);
+        self.send(json!({ "cmd": "quit" }));
+        *self.stdin.lock().unwrap() = None;
         if let Some(mut child) = self.child.lock().unwrap().take() {
             let _ = child.kill();
+            let _ = child.wait();
         }
     }
+
+    pub fn restart(&self, app: AppHandle, config: Value) {
+        self.stop();
+        let _ = app.emit("engine", json!({ "event": "loading", "stage": "restarting", "progress": 0.02 }));
+        self.start(app, config);
+    }
+}
+
+fn report_crash(app: &AppHandle, message: &str) {
+    let _ = app.emit("engine", json!({ "event": "error", "kind": "engine_crashed", "message": message }));
 }

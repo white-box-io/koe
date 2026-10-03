@@ -2,7 +2,7 @@ import { AlertTriangle, Cpu, MicOff, Terminal } from "lucide-react";
 import type { ReactNode } from "react";
 import { Button } from "../../components/ui/controls";
 import { Panel } from "../../components/panel/Panel";
-import { openSoundSettings, sendToEngine } from "../../lib/bridge";
+import { openSoundSettings, restartEngine, sendToEngine } from "../../lib/bridge";
 import type { KoeError } from "../../lib/types";
 import { useKoe } from "../../state/KoeProvider";
 import "./errors.css";
@@ -62,7 +62,7 @@ export function ErrorPanel({ error }: { error: KoeError }) {
     ),
     download_failed: (
       <>
-        <Button onClick={() => { dismiss(); sendToEngine("quit"); }}>Retry</Button>
+        <Button onClick={() => { dismiss(); restartEngine(); }}>Retry</Button>
         <Button kind="secondary" onClick={dismiss}>Cancel</Button>
       </>
     ),
@@ -72,7 +72,12 @@ export function ErrorPanel({ error }: { error: KoeError }) {
         <Button kind="secondary" onClick={() => sendToEngine("retry_mic")}>Retry</Button>
       </>
     ),
-    engine_crashed: <Button kind="secondary" onClick={dismiss}>Dismiss</Button>,
+    engine_crashed: (
+      <>
+        <Button onClick={() => { dismiss(); restartEngine(); }}>Restart voice</Button>
+        <Button kind="secondary" onClick={dismiss}>Dismiss</Button>
+      </>
+    ),
   };
 
   return (
