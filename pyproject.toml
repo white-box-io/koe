@@ -1,0 +1,38 @@
+[project]
+name = "koe"
+version = "0.1.0"
+description = "Talk to Claude Code by voice on Windows"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+    "en-core-web-sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl",
+    "faster-whisper",
+    "keyboard",
+    "kokoro>=0.9",
+    "numpy",
+    "pyperclip",
+    "pyside6",
+    "sounddevice",
+    "soundfile",
+    "torch",
+]
+
+[project.scripts]
+koe = "koe.app:main"
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu124" }
+
+[[tool.uv.index]]
+name = "pytorch-cu124"
+url = "https://download.pytorch.org/whl/cu124"
+explicit = true
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/koe"]

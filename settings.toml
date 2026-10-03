@@ -1,0 +1,11 @@
+[session]
+projects_dir = "~/.claude/projects"
+
+[voice]
+name = "af_heart"
+speed = 1.1
+
+[hearing]
+whisper_model = "small.en"
+language = "en"
+push_to_talk_key = "right ctrl"
