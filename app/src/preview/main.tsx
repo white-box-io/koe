@@ -56,6 +56,13 @@ const TABS: SettingsTab[] = ["general", "hearing", "voice", "character", "about"
 function Gallery() {
   return (
     <div className="gallery">
+      <Tile title="Yuki · widget" patch={{ settings: { ...FAKE_STATE.settings!, character: "yuki" } }}>
+        <Widget mode="speaking" now={now} onDragStart={() => {}} />
+        <Widget mode="idle" now={now} onDragStart={() => {}} />
+      </Tile>
+      <Tile title="Yuki · settings" patch={{ settings: { ...FAKE_STATE.settings!, character: "yuki" }, settingsTab: "character", panel: "settings" }}>
+        <SettingsPanel />
+      </Tile>
       {MODES.map(({ mode, patch }, index) => (
         <Tile key={index} title={`Widget · ${mode}`} patch={patch}>
           <Widget mode={mode} now={now} onDragStart={() => {}} />

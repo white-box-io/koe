@@ -1,16 +1,20 @@
 import { Buddy } from "../../components/buddy/Buddy";
+import { CHARACTERS, characterById } from "../../components/buddy/characters";
 import type { FaceName } from "../../components/buddy/faces";
+import { useKoe } from "../../state/KoeProvider";
 
 const EXPRESSIONS: FaceName[] = ["idle", "listening", "thinking", "speaking", "done", "love"];
-const COMING_SOON = ["Ribbon", "Cat ears", "Twin buns", "Star clip"];
 
 export function CharacterTab() {
+  const { state, updateSettings } = useKoe();
+  const active = characterById(state.settings?.character);
+
   return (
     <>
       <div className="character-preview">
         <Buddy face="hehe" size={56} alive />
         <div className="character-preview__info">
-          <span className="character-preview__name">Anime Buddy</span>
+          <span className="character-preview__name">{active.name}</span>
           <div className="character-preview__faces">
             {EXPRESSIONS.map((face) => (
               <span key={face} className="character-preview__face" title={face}>
@@ -21,18 +25,22 @@ export function CharacterTab() {
         </div>
       </div>
       <div className="characters">
-        <div className="character character--on">
-          <Buddy face="idle" size={36} />
-          <span className="character__label character__label--on">Active</span>
-        </div>
-        {COMING_SOON.map((name) => (
-          <div key={name} className="character" title={`${name} · coming soon`}>
-            <span className="character__locked">
-              <Buddy face="idle" size={36} />
-            </span>
-            <span className="character__label">Soon</span>
-          </div>
-        ))}
+        {CHARACTERS.map((character) => {
+          const isActive = character.id === active.id;
+          return (
+            <button
+              key={character.id}
+              className={`character ${isActive ? "character--on" : ""}`}
+              title={character.name}
+              onClick={() => updateSettings({ character: character.id })}
+            >
+              <Buddy face="idle" size={36} characterId={character.id} />
+              <span className={`character__label ${isActive ? "character__label--on" : ""}`}>
+                {isActive ? "Active" : character.name}
+              </span>
+            </button>
+          );
+        })}
       </div>
     </>
   );
