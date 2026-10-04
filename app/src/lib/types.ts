@@ -57,7 +57,7 @@ export type ErrorKind = "mic_missing" | "gpu_fallback" | "download_failed" | "en
 
 export type KoeError = { kind: ErrorKind; message: string; model?: string };
 
-export type PanelName = "activity" | "settings" | "menu" | "sessions";
+export type PanelName = "activity" | "settings" | "menu" | "sessions" | "backup";
 
 export type SettingsTab = "general" | "hearing" | "voice" | "character" | "about";
 

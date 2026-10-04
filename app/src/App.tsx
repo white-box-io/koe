@@ -6,6 +6,7 @@ import { useWindowLayout } from "./hooks/useWindowLayout";
 import { onPointerOutside } from "./lib/bridge";
 import type { PanelName } from "./lib/types";
 import { ActivityPanel, TaskSummary } from "./panels/activity/ActivityPanel";
+import { BackupPanel } from "./panels/backup/BackupPanel";
 import { ErrorPanel } from "./panels/errors/ErrorPanel";
 import { ContextMenu } from "./panels/menu/ContextMenu";
 import { SessionsPanel } from "./panels/sessions/SessionsPanel";
@@ -20,6 +21,7 @@ const OPENED_PANELS: Record<PanelName, () => React.ReactNode> = {
   settings: () => <SettingsPanel />,
   menu: () => <ContextMenu />,
   sessions: () => <SessionsPanel />,
+  backup: () => <BackupPanel />,
 };
 
 export default function App() {

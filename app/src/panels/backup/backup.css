@@ -1,0 +1,87 @@
+.backup__count {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--faint);
+}
+
+.backup__list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.backup__file {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 10px;
+  text-align: left;
+}
+
+.backup__file:hover {
+  background: var(--surface-strong);
+}
+
+.backup__icon {
+  flex: none;
+  color: var(--amber);
+}
+
+.backup__name {
+  flex: none;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.backup__folder {
+  overflow: hidden;
+  font-size: 11px;
+  color: var(--muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.backup__button,
+.backup__done {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  margin-top: 8px;
+  padding: 8px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.backup__button {
+  color: white;
+  background: var(--accent);
+}
+
+.backup__button:hover {
+  filter: brightness(1.1);
+}
+
+.backup__button:disabled {
+  opacity: 0.5;
+}
+
+.backup__done {
+  color: oklch(0.88 0.1 165);
+  background: var(--surface);
+}
+
+.backup__done:hover {
+  background: var(--surface-strong);
+}
+
+.backup__error {
+  margin-top: 6px;
+  font-size: 11px;
+  color: oklch(0.86 0.08 22);
+}

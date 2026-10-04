@@ -15,6 +15,11 @@ export const listSessions =() => invoke<SessionInfo[]>("list_sessions");
 
 export const openFile = (path: string, snippet?: string) => invoke("open_file", { path, snippet });
 
+export const backupFiles = (project: string, date: string, time: string, files: string[]) =>
+  invoke<string>("backup_files", { project, date, time, files });
+
+export const openFolder = (folder: string) => invoke("open_url", { url: folder });
+
 export const openSoundSettings = () => invoke("open_sound_settings");
 
 export const openUrl = (url: string) => invoke("open_url", { url });

@@ -1,5 +1,5 @@
 import gsap from "gsap";
-import { useEffect, useId, useRef } from "react";
+import { useEffect, useId, useLayoutEffect, useRef } from "react";
 import { currentLevel } from "../../lib/levels";
 import { BODY_PATH } from "./bodyPath";
 import { FACES, type FaceName } from "./faces";
@@ -19,6 +19,7 @@ export function Buddy({ face, size = 30, alive = false, squashKey = 0 }: BuddyPr
   const mouth = useRef<SVGGElement>(null);
   const { eyes: eyeShapes, mouth: mouthShape, extras } = FACES[face];
 
+  useFixedOrigins(root, squashLayer);
   useBobAndBlink(root, eyes, alive);
   useFaceChangePop(root, face, alive);
   useSquash(squashLayer, squashKey);
@@ -56,6 +57,14 @@ export function Buddy({ face, size = 30, alive = false, squashKey = 0 }: BuddyPr
 }
 
 type GroupRef = React.RefObject<SVGGElement | null>;
+
+/** Origins are set once, before any tween, so GSAP never shifts her to compensate. */
+function useFixedOrigins(root: GroupRef, squashLayer: GroupRef) {
+  useLayoutEffect(() => {
+    gsap.set(root.current, { svgOrigin: "150 150" });
+    gsap.set(squashLayer.current, { svgOrigin: "150 238" });
+  }, [root, squashLayer]);
+}
 
 function useBobAndBlink(root: GroupRef, eyes: GroupRef, alive: boolean) {
   useEffect(() => {

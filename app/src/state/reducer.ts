@@ -33,6 +33,7 @@ export type KoeState = {
   sentence: { text: string; seconds: number; at: number } | null;
   task: Task | null;
   doneAt: number;
+  backupFiles: string[];
   panel: PanelName | null;
   settingsTab: SettingsTab;
   hovering: boolean;
@@ -60,6 +61,7 @@ export const initialState: KoeState = {
   sentence: null,
   task: null,
   doneAt: 0,
+  backupFiles: [],
   panel: null,
   settingsTab: "general",
   hovering: false,
@@ -147,6 +149,8 @@ function claudeReducer(state: KoeState, event: Record<string, unknown>): KoeStat
       const task = state.task && !state.task.finishedAt ? state.task : startTask(state.session?.project ?? "Claude Code");
       return { ...state, task: addFile(task, event as unknown as Omit<TouchedFile, "at">) };
     }
+    case "backup":
+      return { ...state, backupFiles: event.files as string[], panel: "backup" };
     case "done":
       return state.task && !state.task.finishedAt
         ? { ...state, task: finishTask(state.task), doneAt: Date.now() }

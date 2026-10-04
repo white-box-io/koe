@@ -117,7 +117,13 @@ fn events_from_line(line: &str) -> Vec<Value> {
                 match block["type"].as_str() {
                     Some("text") => {
                         if let Some(text) = block["text"].as_str() {
-                            events.push(json!({ "kind": "reply", "text": text }));
+                            let (spoken, backup_files) = split_backup_list(text);
+                            if !backup_files.is_empty() {
+                                events.push(json!({ "kind": "backup", "files": backup_files }));
+                            }
+                            if !spoken.trim().is_empty() {
+                                events.push(json!({ "kind": "reply", "text": spoken }));
+                            }
                         }
                     }
                     Some("tool_use") => {
@@ -135,6 +141,23 @@ fn events_from_line(line: &str) -> Vec<Value> {
         _ => {}
     }
     events
+}
+
+const BACKUP_FENCE: &str = "```koe-backup";
+
+/// Pulls a ```koe-backup block (one file path per line) out of a reply.
+/// Returns the reply without it, for speaking, and the listed files.
+fn split_backup_list(text: &str) -> (String, Vec<String>) {
+    let Some(start) = text.find(BACKUP_FENCE) else { return (text.to_string(), vec![]) };
+    let after_fence = &text[start + BACKUP_FENCE.len()..];
+    let end = after_fence.find("```").unwrap_or(after_fence.len());
+    let files = after_fence[..end]
+        .lines()
+        .map(|line| line.trim().trim_start_matches("- ").trim_matches('`').to_string())
+        .filter(|line| !line.is_empty())
+        .collect();
+    let rest = after_fence.get(end + 3..).unwrap_or("");
+    (format!("{}{}", &text[..start], rest), files)
 }
 
 fn file_event(block: &Value) -> Option<Value> {
@@ -231,6 +254,13 @@ pub fn find_line(path: &str, snippet: &str) -> Option<usize> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn backup_list_is_shown_not_spoken() {
+        let (spoken, files) = split_backup_list("Please back up these.\n```koe-backup\nF:/a.php\n- F:/b.js\n```\nThen say done.");
+        assert_eq!(files, vec!["F:/a.php", "F:/b.js"]);
+        assert_eq!(spoken, "Please back up these.\n\nThen say done.");
+    }
 
     #[test]
     fn reads_assistant_text_files_and_turn_end() {

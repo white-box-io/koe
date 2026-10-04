@@ -84,6 +84,25 @@ fn quit_app(app: AppHandle) {
     app.exit(0);
 }
 
+/// Copies files to <project>/Backup/<date>/<time>/<path inside project>, like Fast Backup.
+#[tauri::command]
+fn backup_files(project: String, date: String, time: String, files: Vec<String>) -> Result<String, String> {
+    let project = std::path::PathBuf::from(project);
+    let target_root = project.join("Backup").join(date).join(time);
+    for file in &files {
+        let source = std::path::PathBuf::from(file);
+        let inside = source.strip_prefix(&project).map(|path| path.to_path_buf()).unwrap_or_else(|_| {
+            source.components().filter(|part| matches!(part, std::path::Component::Normal(_))).collect()
+        });
+        let target = target_root.join(inside);
+        if let Some(folder) = target.parent() {
+            std::fs::create_dir_all(folder).map_err(|error| error.to_string())?;
+        }
+        std::fs::copy(&source, &target).map_err(|error| format!("{file}: {error}"))?;
+    }
+    Ok(target_root.to_string_lossy().into_owned())
+}
+
 /// Screen errors go to %APPDATA%/koe/ui.log so crashes can be traced.
 #[tauri::command]
 fn log_ui_error(message: String) {
@@ -146,6 +165,7 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             get_settings,
             log_ui_error,
+            backup_files,
             save_settings,
             engine_command,
             restart_engine,
