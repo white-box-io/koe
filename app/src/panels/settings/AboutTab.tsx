@@ -3,7 +3,7 @@ import { Buddy } from "../../components/buddy/Buddy";
 import { openUrl } from "../../lib/bridge";
 import { useKoe } from "../../state/KoeProvider";
 
-const REPOSITORY = "https://github.com/whiteboxio/koe";
+const REPOSITORY = "https://github.com/white-box-io/koe";
 const CREDITS = "https://github.com/hexgrad/kokoro";
 
 export function AboutTab() {
