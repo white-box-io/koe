@@ -21,6 +21,7 @@ const FACE_FOR_MODE: Record<Mode, FaceName> = {
 };
 
 const POKE_FACES: FaceName[] = ["hehe", "love", "panic", "bruh"];
+const OOPS_MS = 1800;
 const DRAG_THRESHOLD = 4;
 const DOUBLE_CLICK_MS = 230;
 
@@ -32,7 +33,7 @@ export function Widget({ mode, now, onDragStart }: WidgetProps) {
   const press = useRef<{ x: number; y: number; dragging: boolean } | null>(null);
   const clickTimer = useRef(0);
 
-  const face = now < poke.until ? poke.face : state.errors.some((e) => e.kind === "gpu_fallback") && mode === "idle" ? "bruh" : FACE_FOR_MODE[mode];
+  const face = now < poke.until ? poke.face : now < state.oopsAt + OOPS_MS ? "blep" : state.errors.some((e) => e.kind === "gpu_fallback") && mode === "idle" ? "bruh" : FACE_FOR_MODE[mode];
   const showQuick = state.hovering && !["loading", "recording", "error"].includes(mode) && state.settings?.setupDone;
   const isCompact = !showQuick && isEmpty(mode, state.session, state.errors.length);
 

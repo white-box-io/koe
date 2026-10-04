@@ -111,6 +111,12 @@ fn events_from_line(line: &str) -> Vec<Value> {
                     events.push(json!({ "kind": "prompt", "text": text }));
                 }
             }
+            let tool_failed = content
+                .as_array()
+                .is_some_and(|blocks| blocks.iter().any(|b| b["type"] == "tool_result" && b["is_error"] == true));
+            if tool_failed {
+                events.push(json!({ "kind": "oops" }));
+            }
         }
         Some("assistant") => {
             for block in message["content"].as_array().into_iter().flatten() {

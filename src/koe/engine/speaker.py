@@ -1,4 +1,5 @@
 import queue
+import re
 import threading
 import time
 from typing import Callable
@@ -7,6 +8,7 @@ import numpy as np
 import sounddevice as sd
 from kokoro import KPipeline
 
+from koe.engine import elevenlabs
 from koe.engine.voices import language_code_for
 
 KOKORO_SAMPLE_RATE = 24000
@@ -27,6 +29,9 @@ class Speaker:
         self.on_sentence = on_sentence
         self.voice_id = "af_heart"
         self.speed = 1.1
+        self.eleven_api_key = ""
+        self.eleven_voice_id = ""
+        self.on_voice_error: Callable[[str], None] = lambda message: None
         self.pipelines: dict[str, KPipeline] = {}
         self.pending_texts: queue.Queue[str] = queue.Queue()
         self.playing_audio = np.zeros(0, dtype=np.float32)
@@ -81,8 +86,7 @@ class Speaker:
 
     def _speak(self, text: str) -> None:
         stop_count_at_start = self.stop_count
-        pipeline = self._pipeline_for(self.voice_id)
-        for sentence, _, audio in pipeline(text, voice=self.voice_id, speed=self.speed, split_pattern=SENTENCE_BREAK):
+        for sentence, audio in self._sentences_with_audio(text):
             if self.stop_count != stop_count_at_start:
                 break
             self.playing_audio = np.asarray(audio, dtype=np.float32)
@@ -91,3 +95,19 @@ class Speaker:
             sd.play(self.playing_audio, KOKORO_SAMPLE_RATE)
             sd.wait()
         self.playing_audio = np.zeros(0, dtype=np.float32)
+
+    def _sentences_with_audio(self, text: str):
+        if self.eleven_api_key and self.eleven_voice_id:
+            try:
+                yield from self._elevenlabs_sentences(text)
+                return
+            except Exception as error:
+                self.on_voice_error(str(error))
+        pipeline = self._pipeline_for(self.voice_id)
+        for sentence, _, audio in pipeline(text, voice=self.voice_id, speed=self.speed, split_pattern=SENTENCE_BREAK):
+            yield sentence, audio
+
+    def _elevenlabs_sentences(self, text: str):
+        sentences = [part.strip() for part in re.split(SENTENCE_BREAK, text) if part.strip()]
+        for sentence in sentences:
+            yield sentence, elevenlabs.synthesize(sentence, self.eleven_voice_id, self.eleven_api_key, self.speed)

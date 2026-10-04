@@ -1,0 +1,28 @@
+.eleven__key {
+  display: flex;
+  gap: 6px;
+  padding-bottom: 6px;
+}
+
+.eleven__input {
+  flex: 1;
+  min-width: 0;
+  padding: 7px 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font: inherit;
+  font-size: 12px;
+  color: var(--text);
+  background: var(--surface);
+  outline: none;
+}
+
+.eleven__input:focus {
+  border-color: var(--accent);
+}
+
+.eleven__error {
+  padding-bottom: 6px;
+  font-size: 11px;
+  color: oklch(0.86 0.08 22);
+}

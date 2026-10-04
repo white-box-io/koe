@@ -7,6 +7,9 @@ export type Settings = {
   device: string;
   voice: string;
   speed: number;
+  voiceProvider: "kokoro" | "elevenlabs";
+  elevenApiKey: string;
+  elevenVoiceId: string;
   followSession: string;
   speakReplies: boolean;
   subtitles: boolean;
@@ -33,6 +36,8 @@ export type Voice = {
   gender: string;
 };
 
+export type ElevenVoice = { id: string; name: string; gender: string; accent: string };
+
 export type InputDevice = { index: number; name: string; default: boolean };
 
 export type FileAction = "read" | "edit" | "write" | "new";
@@ -53,7 +58,7 @@ export type Task = {
   files: TouchedFile[];
 };
 
-export type ErrorKind = "mic_missing" | "gpu_fallback" | "download_failed" | "engine_crashed" | "no_session" | "model_failed";
+export type ErrorKind = "mic_missing" | "gpu_fallback" | "download_failed" | "engine_crashed" | "no_session" | "model_failed" | "voice_failed";
 
 export type KoeError = { kind: ErrorKind; message: string; model?: string };
 

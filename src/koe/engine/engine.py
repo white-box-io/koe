@@ -24,6 +24,9 @@ DEFAULT_SETTINGS = {
     "language": "en",
     "device": "auto",
     "type_into_claude": True,
+    "voice_provider": "kokoro",
+    "eleven_api_key": "",
+    "eleven_voice_id": "",
 }
 
 
@@ -104,8 +107,8 @@ class Engine:
             self.speaker = loading_speaker.result()
             emit("loading", stage="loading hearing", progress=0.8)
             self.transcriber = loading_transcriber.result()
-        self.speaker.voice_id = self.settings["voice"]
-        self.speaker.speed = self.settings["speed"]
+        self.speaker.on_voice_error = lambda message: emit("error", kind="voice_failed", message=message)
+        self._apply_voice_settings()
         self.speaker.start()
         emit("loading", stage="almost ready", progress=0.95)
 
@@ -131,6 +134,7 @@ class Engine:
 
     def _on_cancel(self) -> None:
         emit("recording", on=False)
+        emit("cancelled")
 
     def _on_release(self, audio: np.ndarray, held_seconds: float) -> None:
         emit("recording", on=False)
@@ -201,20 +205,39 @@ class Engine:
     def _cmd_list_voices(self, command: dict) -> None:
         emit("voices", voices=VOICES)
 
+    def _cmd_list_eleven_voices(self, command: dict) -> None:
+        from koe.engine import elevenlabs
+
+        try:
+            emit("eleven_voices", voices=elevenlabs.list_voices(command.get("api_key", "")))
+        except Exception as error:
+            emit("eleven_voices", voices=[], error=str(error))
+
+    def _apply_voice_settings(self) -> None:
+        use_elevenlabs = self.settings["voice_provider"] == "elevenlabs"
+        self.speaker.voice_id = self.settings["voice"]
+        self.speaker.speed = self.settings["speed"]
+        self.speaker.eleven_api_key = self.settings["eleven_api_key"] if use_elevenlabs else ""
+        self.speaker.eleven_voice_id = self.settings["eleven_voice_id"] if use_elevenlabs else ""
+
     def _cmd_preview_voice(self, command: dict) -> None:
         if not self.speaker:
             return
         self.speaker.stop()
-        previous_voice = self.speaker.voice_id
-        self.speaker.voice_id = command.get("voice", previous_voice)
+        if command.get("provider") == "elevenlabs":
+            self.speaker.eleven_api_key = self.settings["eleven_api_key"]
+            self.speaker.eleven_voice_id = command.get("voice", "")
+        else:
+            self.speaker.eleven_api_key = ""
+            self.speaker.voice_id = command.get("voice", self.speaker.voice_id)
         self.speaker.say(PREVIEW_SENTENCE)
-        threading.Thread(target=self._restore_voice_after_preview, args=(previous_voice,), daemon=True).start()
+        threading.Thread(target=self._restore_voice_after_preview, daemon=True).start()
 
-    def _restore_voice_after_preview(self, previous_voice: str) -> None:
+    def _restore_voice_after_preview(self) -> None:
         time.sleep(0.3)
         while self.speaker.is_speaking:
             time.sleep(0.1)
-        self.speaker.voice_id = self.settings["voice"] if self.settings["voice"] else previous_voice
+        self._apply_voice_settings()
 
     def _cmd_config(self, command: dict) -> None:
         changes = {key: value for key, value in command.items() if key in DEFAULT_SETTINGS}
@@ -225,8 +248,7 @@ class Engine:
         previous_model = self.settings["whisper_model"]
         self.settings.update(changes)
         if self.speaker:
-            self.speaker.voice_id = self.settings["voice"]
-            self.speaker.speed = self.settings["speed"]
+            self._apply_voice_settings()
         if self.microphone:
             self.microphone.hotkey = self.settings["hotkey"]
             try:

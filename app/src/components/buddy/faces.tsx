@@ -4,6 +4,7 @@ export type FaceName =
   | "idle"
   | "listening"
   | "thinking"
+  | "blep"
   | "speaking"
   | "done"
   | "error"
@@ -36,7 +37,14 @@ const BigEye = ({ x }: { x: number }) => (
   </>
 );
 
-const Heart = ({ x }: { x: number }) => (
+const LookingUpEye = ({ x }: { x: number }) => (
+  <g className="buddy-pupil">
+    <ellipse cx={x} cy="146" rx="15" ry="22" fill="url(#buddy-iris)" />
+    <ellipse cx={x + 4} cy="134" rx="5" ry="6" fill="#fff" />
+  </g>
+);
+
+const Heart =({ x }: { x: number }) => (
   <path
     d={`M${x},158.8 C${x - 24.2},145.6 ${x - 11},128 ${x},141.2 C${x + 11},128 ${x + 24.2},145.6 ${x},158.8 Z`}
     fill="#FF4F86"
@@ -71,15 +79,29 @@ export const FACES: Record<FaceName, Face> = {
   thinking: {
     eyes: (
       <>
-        <ellipse cx="110" cy="146" rx="18" ry="14" fill="#fff" stroke={INK} strokeWidth="3" />
-        <circle className="buddy-pupil" cx="120" cy="144" r="8" fill="url(#buddy-iris)" />
-        <ellipse cx="190" cy="146" rx="18" ry="14" fill="#fff" stroke={INK} strokeWidth="3" />
-        <circle className="buddy-pupil" cx="200" cy="144" r="8" fill="url(#buddy-iris)" />
-        <Line d="M92,124 L126,130" width={4} />
-        <Line d="M174,126 L208,120" width={4} />
+        <LookingUpEye x={116} />
+        <LookingUpEye x={196} />
+        <Line d="M96,116 Q110,108 126,114" width={4} />
+        <Line d="M176,112 Q190,106 206,112" width={4} />
       </>
     ),
-    mouth: <Line d="M142,180 L160,178" width={3.5} />,
+    mouth: <Line d="M144,174 Q150,170 150,176 Q150,182 144,182 M150,176 Q156,172 156,178" width={3.5} />,
+    extras: <Blush strength={0.6} />,
+  },
+  blep: {
+    eyes: (
+      <>
+        <Line d="M94,148 Q110,138 126,148" />
+        <LookingUpEye x={190} />
+      </>
+    ),
+    mouth: (
+      <>
+        <path d="M150,179 Q150,194 157,194 Q164,194 162,178 Z" fill="#FF8FA3" />
+        <Line d="M140,176 Q150,182 160,176" width={3.5} />
+      </>
+    ),
+    extras: <Blush strength={0.7} />,
   },
   speaking: {
     eyes: (

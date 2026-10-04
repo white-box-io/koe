@@ -1,4 +1,5 @@
 import type {
+  ElevenVoice,
   InputDevice,
   KoeError,
   PanelName,
@@ -34,6 +35,8 @@ export type KoeState = {
   task: Task | null;
   doneAt: number;
   backupFiles: string[];
+  oopsAt: number;
+  elevenVoices: { voices: ElevenVoice[]; error: string | null } | null;
   panel: PanelName | null;
   settingsTab: SettingsTab;
   hovering: boolean;
@@ -62,6 +65,8 @@ export const initialState: KoeState = {
   task: null,
   doneAt: 0,
   backupFiles: [],
+  oopsAt: 0,
+  elevenVoices: null,
   panel: null,
   settingsTab: "general",
   hovering: false,
@@ -99,6 +104,13 @@ function engineReducer(state: KoeState, event: Record<string, unknown>): KoeStat
       return event.on
         ? { ...state, recording: true, recordingStartedAt: Date.now(), panel: null, sentence: null, heard: null }
         : { ...state, recording: false };
+    case "eleven_voices":
+      return {
+        ...state,
+        elevenVoices: { voices: event.voices as ElevenVoice[], error: (event.error as string | undefined) ?? null },
+      };
+    case "cancelled":
+      return { ...state, oopsAt: Date.now() };
     case "transcribing":
       return { ...state, transcribing: true };
     case "heard":
@@ -149,6 +161,8 @@ function claudeReducer(state: KoeState, event: Record<string, unknown>): KoeStat
       const task = state.task && !state.task.finishedAt ? state.task : startTask(state.session?.project ?? "Claude Code");
       return { ...state, task: addFile(task, event as unknown as Omit<TouchedFile, "at">) };
     }
+    case "oops":
+      return { ...state, oopsAt: Date.now() };
     case "backup":
       return { ...state, backupFiles: event.files as string[], panel: "backup" };
     case "done":

@@ -1,3 +1,4 @@
+import faulthandler
 import json
 import sys
 import threading
@@ -6,6 +7,7 @@ from koe.engine.protocol import emit, listen_for_commands, take_over_stdout
 
 
 def main() -> None:
+    faulthandler.enable()
     take_over_stdout()
     from koe.engine.engine import Engine
 

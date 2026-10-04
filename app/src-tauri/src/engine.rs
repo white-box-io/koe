@@ -109,7 +109,11 @@ fn open_log() -> std::io::Result<File> {
 
 fn last_log_line() -> Option<String> {
     let text = std::fs::read_to_string(log_path()).ok()?;
-    text.lines().rev().map(str::trim).find(|line| !line.is_empty()).map(String::from)
+    text.lines()
+        .rev()
+        .map(str::trim)
+        .find(|line| line.contains("Error") || line.contains("Fatal") || line.contains("exception"))
+        .map(String::from)
 }
 
 fn report_crash(app: &AppHandle, message: &str) {

@@ -13,7 +13,10 @@ VOICES = [
     {"id": "bm_lewis", "name": "Lewis", "style": "Bright", "accent": "UK", "gender": "male"},
 ]
 
-PREVIEW_SENTENCE = "Hi, I'm Koe. This is how I sound."
+PREVIEW_SENTENCE = (
+    "Okay, I've finished the changes. Two files were updated, and everything builds fine. "
+    "Want me to run the tests, or should we take a quick break first?"
+)
 
 
 def language_code_for(voice_id: str) -> str:

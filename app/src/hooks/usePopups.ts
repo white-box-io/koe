@@ -51,7 +51,7 @@ export function usePopups(state: KoeState, now: number) {
       const until = state.speaking || state.transcribing ? Infinity : held(lastSpoken + SUBTITLE_LINGER_MS);
       if (now < until) return { popup: { kind: "subtitles" }, until };
     }
-    const notice = state.errors.find((e) => e.kind === "gpu_fallback" || e.kind === "no_session");
+    const notice = state.errors.find((e) => e.kind === "gpu_fallback" || e.kind === "no_session" || e.kind === "voice_failed" || e.kind === "model_failed");
     if (notice) {
       const until = held(noticeSeen.current[notice.kind] + NOTICE_MS);
       if (now < until) return { popup: { kind: "error", error: notice }, until };

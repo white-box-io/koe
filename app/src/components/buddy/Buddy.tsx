@@ -120,7 +120,7 @@ function useWanderingPupils(eyes: GroupRef, active: boolean) {
   useEffect(() => {
     if (!active || !eyes.current) return;
     const pupils = eyes.current.querySelectorAll(".buddy-pupil");
-    const wander = gsap.to(pupils, { x: -18, duration: 1.1, ease: "sine.inOut", yoyo: true, repeat: -1, repeatDelay: 0.4 });
+    const wander = gsap.to(pupils, { x: -6, y: -3, duration: 1.1, ease: "sine.inOut", yoyo: true, repeat: -1, repeatDelay: 0.4 });
     return () => {
       wander.kill();
     };

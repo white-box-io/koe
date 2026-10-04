@@ -14,6 +14,9 @@ pub struct Settings {
     pub voice: String,
     pub speed: f64,
     pub follow_session: String,
+    pub voice_provider: String,
+    pub eleven_api_key: String,
+    pub eleven_voice_id: String,
     pub speak_replies: bool,
     pub subtitles: bool,
     pub task_alerts: bool,
@@ -35,6 +38,9 @@ impl Default for Settings {
             voice: "af_heart".into(),
             speed: 1.1,
             follow_session: "auto".into(),
+            voice_provider: "kokoro".into(),
+            eleven_api_key: String::new(),
+            eleven_voice_id: String::new(),
             speak_replies: true,
             subtitles: true,
             task_alerts: true,
@@ -57,6 +63,9 @@ impl Settings {
             "device": self.device,
             "voice": self.voice,
             "speed": self.speed,
+            "voice_provider": self.voice_provider,
+            "eleven_api_key": self.eleven_api_key,
+            "eleven_voice_id": self.eleven_voice_id,
         })
     }
 }

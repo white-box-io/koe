@@ -34,6 +34,12 @@ const COPY: Record<KoeError["kind"], ErrorCopy> = {
     title: "Couldn't switch model",
     body: (error) => `That model didn't load, so Koe kept ${error.model ?? "the old one"}. It may need more GPU memory.`,
   },
+  voice_failed: {
+    icon: <AlertTriangle size={15} />,
+    tone: "amber",
+    title: "ElevenLabs didn't answer",
+    body: () => "Koe used the local voice instead. Check your key or remaining credits.",
+  },
   mic_missing: {
     icon: <MicOff size={15} />,
     tone: "red",
@@ -75,6 +81,7 @@ export function ErrorPanel({ error }: { error: KoeError }) {
     model_failed: (
       <Button onClick={() => { updateSettings({ whisperModel: error.model ?? "small.en" }); dismiss(); }}>OK</Button>
     ),
+    voice_failed: <Button onClick={dismiss}>OK</Button>,
     mic_missing: (
       <>
         <Button onClick={() => openSoundSettings()}>Open sound settings</Button>
