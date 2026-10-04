@@ -84,6 +84,16 @@ fn quit_app(app: AppHandle) {
     app.exit(0);
 }
 
+/// Screen errors go to %APPDATA%/koe/ui.log so crashes can be traced.
+#[tauri::command]
+fn log_ui_error(message: String) {
+    use std::io::Write;
+    let path = engine::log_path().with_file_name("ui.log");
+    if let Ok(mut file) = std::fs::OpenOptions::new().create(true).append(true).open(path) {
+        let _ = writeln!(file, "{message}");
+    }
+}
+
 fn run_hidden(args: &[&str]) {
     let _ = Command::new("cmd").args(args).creation_flags(CREATE_NO_WINDOW).spawn();
 }
@@ -135,6 +145,7 @@ pub fn run() {
         })
         .invoke_handler(tauri::generate_handler![
             get_settings,
+            log_ui_error,
             save_settings,
             engine_command,
             restart_engine,

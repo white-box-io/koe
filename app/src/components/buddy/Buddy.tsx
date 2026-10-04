@@ -4,11 +4,6 @@ import { currentLevel } from "../../lib/levels";
 import { BODY_PATH } from "./bodyPath";
 import { FACES, type FaceName } from "./faces";
 import "./buddy.css";
-
-// Each tween scales around its own point; smoothing would leave her shifted afterwards.
-gsap.config({ force3D: false });
-gsap.defaults({ smoothOrigin: false } as gsap.TweenVars);
-
 type BuddyProps = {
   face: FaceName;
   size?: number;
@@ -19,13 +14,14 @@ type BuddyProps = {
 export function Buddy({ face, size = 30, alive = false, squashKey = 0 }: BuddyProps) {
   const id = useId().replace(/:/g, "");
   const root = useRef<SVGGElement>(null);
+  const squashLayer = useRef<SVGGElement>(null);
   const eyes = useRef<SVGGElement>(null);
   const mouth = useRef<SVGGElement>(null);
   const { eyes: eyeShapes, mouth: mouthShape, extras } = FACES[face];
 
   useBobAndBlink(root, eyes, alive);
   useFaceChangePop(root, face, alive);
-  useSquash(root, squashKey);
+  useSquash(squashLayer, squashKey);
   useTalkingMouth(mouth, alive && face === "speaking");
   useWanderingPupils(eyes, alive && face === "thinking");
 
@@ -46,12 +42,14 @@ export function Buddy({ face, size = 30, alive = false, squashKey = 0 }: BuddyPr
           <stop offset="1" stopColor="#8E6BD8" />
         </linearGradient>
       </defs>
-      <g ref={root}>
-        <path d={BODY_PATH} fill={`url(#${id}-skin)`} />
-        <path d={BODY_PATH} fill={`url(#${id}-shine)`} />
-        <g ref={eyes}>{eyeShapes}</g>
-        <g ref={mouth}>{mouthShape}</g>
-        {extras}
+      <g ref={squashLayer}>
+        <g ref={root}>
+          <path d={BODY_PATH} fill={`url(#${id}-skin)`} />
+          <path d={BODY_PATH} fill={`url(#${id}-shine)`} />
+          <g ref={eyes}>{eyeShapes}</g>
+          <g ref={mouth}>{mouthShape}</g>
+          {extras}
+        </g>
       </g>
     </svg>
   );
