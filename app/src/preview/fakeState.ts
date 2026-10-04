@@ -42,6 +42,7 @@ export const FAKE_STATE: KoeState = {
     elevenApiKey: "",
     elevenVoiceId: "",
     speakReplies: true,
+    autoSend: true,
     subtitles: true,
     taskAlerts: true,
     soundEffects: false,

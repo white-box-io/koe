@@ -18,6 +18,7 @@ pub struct Settings {
     pub eleven_api_key: String,
     pub eleven_voice_id: String,
     pub speak_replies: bool,
+    pub auto_send: bool,
     pub subtitles: bool,
     pub task_alerts: bool,
     pub sound_effects: bool,
@@ -42,6 +43,7 @@ impl Default for Settings {
             eleven_api_key: String::new(),
             eleven_voice_id: String::new(),
             speak_replies: true,
+            auto_send: true,
             subtitles: true,
             task_alerts: true,
             sound_effects: false,
@@ -66,6 +68,7 @@ impl Settings {
             "voice_provider": self.voice_provider,
             "eleven_api_key": self.eleven_api_key,
             "eleven_voice_id": self.eleven_voice_id,
+            "auto_send": self.auto_send,
         })
     }
 }

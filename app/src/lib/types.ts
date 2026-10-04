@@ -12,6 +12,7 @@ export type Settings = {
   elevenVoiceId: string;
   followSession: string;
   speakReplies: boolean;
+  autoSend: boolean;
   subtitles: boolean;
   taskAlerts: boolean;
   soundEffects: boolean;

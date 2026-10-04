@@ -18,6 +18,9 @@ export function GeneralTab() {
           {sessionLabel}
         </button>
       </Row>
+      <Row label="Auto send">
+        <Toggle on={settings.autoSend} onChange={(autoSend) => updateSettings({ autoSend })} />
+      </Row>
       <Row label="Speak replies">
         <Toggle
           on={settings.speakReplies}

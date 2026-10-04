@@ -8,14 +8,17 @@ CLIPBOARD_READY_TIMEOUT = 1.0
 RESTORE_AFTER_SECONDS = 2.0
 
 
-def type_into_focused_window(text: str) -> None:
-    """Pastes the text into the focused Claude Code input and sends it."""
+def type_into_focused_window(text: str, send: bool) -> None:
+    """Pastes the text into the focused Claude Code input, and sends it when asked."""
     previous_clipboard = pyperclip.paste()
+    if not send:
+        text += " "
     pyperclip.copy(text)
     _wait_until_clipboard_holds(text)
     keyboard.send("ctrl+v")
-    time.sleep(0.25)
-    keyboard.send("enter")
+    if send:
+        time.sleep(0.25)
+        keyboard.send("enter")
     threading.Timer(RESTORE_AFTER_SECONDS, _restore_clipboard, args=(text, previous_clipboard)).start()
 
 

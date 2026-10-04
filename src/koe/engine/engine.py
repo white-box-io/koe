@@ -24,6 +24,7 @@ DEFAULT_SETTINGS = {
     "language": "en",
     "device": "auto",
     "type_into_claude": True,
+    "auto_send": True,
     "voice_provider": "kokoro",
     "eleven_api_key": "",
     "eleven_voice_id": "",
@@ -151,7 +152,7 @@ class Engine:
             from koe.prompt_typer import type_into_focused_window
 
             focus_claude_window()
-            type_into_focused_window(text)
+            type_into_focused_window(text, self.settings["auto_send"])
 
     def _on_mic_level(self, level: float) -> None:
         self.latest_mic_level = level
