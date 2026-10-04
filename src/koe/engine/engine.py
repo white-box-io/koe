@@ -114,7 +114,7 @@ class Engine:
         from koe.engine.microphone import Microphone
 
         start_tracking()
-        self.microphone = Microphone(self._on_press, self._on_release, self._on_mic_level)
+        self.microphone = Microphone(self._on_press, self._on_release, self._on_mic_level, self._on_cancel)
         self.microphone.hotkey = self.settings["hotkey"]
         self.microphone.device_index = self.settings["mic_index"]
         try:
@@ -128,6 +128,9 @@ class Engine:
         if self.speaker and self.speaker.stop():
             emit("stopped")
         emit("recording", on=True)
+
+    def _on_cancel(self) -> None:
+        emit("recording", on=False)
 
     def _on_release(self, audio: np.ndarray, held_seconds: float) -> None:
         emit("recording", on=False)

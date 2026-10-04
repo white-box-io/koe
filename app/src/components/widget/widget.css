@@ -17,6 +17,15 @@
 .widget--done { --glow: var(--green); }
 .widget--error { --glow: var(--red); }
 
+.widget--recording,
+.widget--thinking,
+.widget--transcribing,
+.widget--speaking,
+.widget--done,
+.widget--error {
+  background: linear-gradient(180deg, var(--glow), color-mix(in oklch, var(--glow) 45%, black));
+}
+
 .widget__glass {
   display: flex;
   align-items: center;

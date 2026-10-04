@@ -10,6 +10,7 @@ from koe.hotkey import is_key_held
 SAMPLE_RATE = 16000
 KEY_POLL_SECONDS = 0.02
 LEVEL_BOOST = 8.0
+CANCEL_KEY = "right shift"
 
 
 def list_input_devices() -> list[dict]:
@@ -32,7 +33,9 @@ class Microphone:
         on_press: Callable[[], None],
         on_release: Callable[[np.ndarray, float], None],
         on_level: Callable[[float], None],
+        on_cancel: Callable[[], None],
     ):
+        self.on_cancel = on_cancel
         self.on_press = on_press
         self.on_release = on_release
         self.on_level = on_level
@@ -75,13 +78,24 @@ class Microphone:
             self.on_level(min(float(np.sqrt(np.mean(chunk**2))) * LEVEL_BOOST, 1.0))
 
     def _hotkey_loop(self) -> None:
+        waiting_for_release = False
         while True:
             is_held = not self.is_paused and is_key_held(self.hotkey)
-            if is_held and not self.is_recording:
+            if waiting_for_release:
+                waiting_for_release = is_held
+            elif is_held and not self.is_recording:
                 self._begin_recording()
+            elif is_held and is_key_held(CANCEL_KEY) and self.hotkey != CANCEL_KEY:
+                self._cancel_recording()
+                waiting_for_release = True
             elif not is_held and self.is_recording:
                 self._finish_recording()
             time.sleep(KEY_POLL_SECONDS)
+
+    def _cancel_recording(self) -> None:
+        self.is_recording = False
+        self.recorded_chunks = []
+        self.on_cancel()
 
     def _begin_recording(self) -> None:
         self.recorded_chunks = []

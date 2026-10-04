@@ -8,6 +8,7 @@ VIRTUAL_KEY_CODES = {
     "f8": 0x77,
     "f9": 0x78,
     "f10": 0x79,
+    "esc": 0x1B,
 }
 
 
