@@ -57,7 +57,20 @@ Tools to build it:
 
 ## Install
 
-There is no installer yet, so you build it once. It takes about 10 minutes, mostly downloads.
+1. Download `Koe-v0.1.0-windows-x64.zip` from the
+   [latest release](https://github.com/white-box-io/koe/releases/latest).
+2. Unzip it anywhere, for example `C:\Koe`. Keep the folder together.
+3. Double-click `koe.exe`.
+
+The first launch installs the voice engine (about 3 GB of Python and PyTorch, once) and
+the speech models (about 800 MB, once). It can take 10 to 20 minutes depending on your
+internet. After that Koe starts in seconds.
+
+To start Koe with Windows, turn on **Settings → General → Start with Windows**.
+
+### Build from source
+
+If you prefer to build it yourself (about 10 minutes, mostly downloads):
 
 ```powershell
 git clone https://github.com/white-box-io/koe.git
@@ -72,15 +85,10 @@ npm install
 npx tauri build --no-bundle
 ```
 
-This creates `app\src-tauri\target\release\koe.exe`. Run it.
+This creates `app\src-tauri\target\release\koe.exe`. Keep the `koe` folder where it is:
+a self-built `koe.exe` runs the voice engine from the repo's `.venv`.
 
-The first launch walks you through picking your microphone, talk key and voice, then
-downloads the speech models once (~800 MB).
-
-To start Koe with Windows, turn on **Settings → General → Start with Windows**.
-
-> Keep the `koe` folder where it is. `koe.exe` runs the voice engine from the folder's
-> `.venv`.
+To build the release zip yourself: `scripts\package-release.ps1`.
 
 ## How to use
 

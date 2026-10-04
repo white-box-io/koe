@@ -23,15 +23,20 @@ export function WidgetContent({ mode, now }: { mode: Mode; now: number }) {
   const { state } = useKoe();
 
   switch (mode) {
-    case "loading":
+    case "loading": {
+      const installing = state.install !== null && state.install.progress < 1;
+      const progress = installing ? state.install!.progress : state.progress;
       return (
         <div className="widget__progress">
-          <span className="widget__label widget__label--muted">Waking up… {Math.round(state.progress * 100)}%</span>
+          <span className="widget__label widget__label--muted">
+            {installing ? "Installing voice" : "Waking up"}… {Math.round(progress * 100)}%
+          </span>
           <span className="widget__track">
-            <span className="widget__fill" style={{ width: `${state.progress * 100}%` }} />
+            <span className="widget__fill" style={{ width: `${progress * 100}%` }} />
           </span>
         </div>
       );
+    }
     case "recording":
       return (
         <>

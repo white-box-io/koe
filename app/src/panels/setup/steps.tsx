@@ -97,8 +97,26 @@ export function DownloadStep() {
     { name: "Whisper · hearing", key: "whisper" },
     { name: "Kokoro · voice", key: "kokoro" },
   ];
+  const install = state.install;
   return (
     <>
+      {install && (
+        <div className="setup__download">
+          <div className="setup__download-top">
+            <span>Voice engine · one-time, ~3 GB</span>
+            {install.progress >= 1 ? (
+              <span className="setup__done">
+                <Check size={12} /> Ready
+              </span>
+            ) : (
+              <span className="setup__percent">{Math.round(install.progress * 100)}%</span>
+            )}
+          </div>
+          <span className="setup__track">
+            <span className="setup__fill" style={{ width: `${install.progress * 100}%` }} />
+          </span>
+        </div>
+      )}
       {items.map((item) => {
         const progress = state.engineReady ? 1 : (state.downloads[item.key] ?? (state.progress > 0.55 ? 1 : 0));
         return (

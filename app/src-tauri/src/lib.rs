@@ -1,4 +1,5 @@
 mod engine;
+mod installer;
 mod pointer;
 mod settings;
 mod transcript;

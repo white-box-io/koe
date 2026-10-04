@@ -36,6 +36,7 @@ export type KoeState = {
   doneAt: number;
   backupFiles: string[];
   oopsAt: number;
+  install: { stage: string; progress: number } | null;
   elevenVoices: { voices: ElevenVoice[]; error: string | null } | null;
   panel: PanelName | null;
   settingsTab: SettingsTab;
@@ -66,6 +67,7 @@ export const initialState: KoeState = {
   doneAt: 0,
   backupFiles: [],
   oopsAt: 0,
+  install: null,
   elevenVoices: null,
   panel: null,
   settingsTab: "general",
@@ -104,6 +106,8 @@ function engineReducer(state: KoeState, event: Record<string, unknown>): KoeStat
       return event.on
         ? { ...state, recording: true, recordingStartedAt: Date.now(), panel: null, sentence: null, heard: null }
         : { ...state, recording: false };
+    case "install":
+      return { ...state, install: { stage: event.stage as string, progress: event.progress as number } };
     case "eleven_voices":
       return {
         ...state,

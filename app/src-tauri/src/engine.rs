@@ -2,7 +2,8 @@ use serde_json::{json, Value};
 use std::fs::File;
 use std::io::{BufRead, BufReader, Write};
 use std::os::windows::process::CommandExt;
-use std::path::PathBuf;
+use crate::installer;
+use std::path::{Path, PathBuf};
 use std::process::{Child, ChildStdin, Command, Stdio};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
@@ -10,14 +11,6 @@ use std::thread;
 use tauri::{AppHandle, Emitter};
 
 const CREATE_NO_WINDOW: u32 = 0x0800_0000;
-
-/// The koe project folder that holds the Python voice engine and its .venv.
-pub fn project_root() -> PathBuf {
-    if let Ok(path) = std::env::var("KOE_PROJECT") {
-        return PathBuf::from(path);
-    }
-    PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("..").join("..")
-}
 
 /// The Python voice engine runs as a hidden child process and talks JSON lines.
 pub struct Engine {
@@ -31,13 +24,25 @@ impl Engine {
         Self { stdin: Mutex::new(None), child: Mutex::new(None), stopping: Arc::new(AtomicBool::new(false)) }
     }
 
-    pub fn start(&self, app: AppHandle, config: Value) {
+    /// Starts the engine, installing it first if this is the first run of a release.
+    pub fn start(self: &Arc<Self>, app: AppHandle, config: Value) {
         self.stopping.store(false, Ordering::SeqCst);
-        let root = project_root();
-        let python = root.join(".venv").join("Scripts").join("python.exe");
-        let spawned = Command::new(python)
+        let root = installer::engine_root();
+        if installer::python_path(&root).exists() {
+            self.spawn_engine(app, config, &root);
+            return;
+        }
+        let engine = self.clone();
+        thread::spawn(move || match installer::install(&app, &root) {
+            Ok(()) => engine.spawn_engine(app, config, &root),
+            Err(message) => report_crash(&app, &message),
+        });
+    }
+
+    fn spawn_engine(&self, app: AppHandle, config: Value, root: &Path) {
+        let spawned = Command::new(installer::python_path(root))
             .args(["-m", "koe.engine", &config.to_string()])
-            .current_dir(&root)
+            .current_dir(root)
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
             .stderr(open_log().map(Stdio::from).unwrap_or_else(|_| Stdio::null()))
@@ -87,7 +92,7 @@ impl Engine {
         }
     }
 
-    pub fn restart(&self, app: AppHandle, config: Value) {
+    pub fn restart(self: &Arc<Self>, app: AppHandle, config: Value) {
         self.stop();
         let _ = app.emit("engine", json!({ "event": "loading", "stage": "restarting", "progress": 0.02 }));
         self.start(app, config);
