@@ -9,6 +9,7 @@ const MODELS = [
   { value: "base.en", label: "Base · fastest" },
   { value: "small.en", label: "Small · balanced" },
   { value: "medium.en", label: "Medium · most accurate" },
+  { value: "whistle", label: "Whistle · tiny, experimental" },
 ];
 
 export function HearingTab() {

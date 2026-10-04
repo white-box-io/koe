@@ -10,10 +10,17 @@ MODELS = {
         "check_file": "kokoro-v1_0.pth",
         "files": ["config.json", "kokoro-v1_0.pth", "voices/*"],
     },
+    "whistle": {
+        "repo": "Cactus-Compute/whistle",
+        "check_file": "whistle.cact",
+        "files": ["whistle.cact"],
+    },
 }
 
 
 def whisper_model_info(model_name: str) -> dict:
+    if model_name in MODELS:
+        return MODELS[model_name]
     return {
         "repo": f"Systran/faster-whisper-{model_name}",
         "check_file": "model.bin",
@@ -24,6 +31,10 @@ def whisper_model_info(model_name: str) -> dict:
 def is_downloaded(info: dict) -> bool:
     cached = try_to_load_from_cache(info["repo"], info["check_file"])
     return isinstance(cached, str)
+
+
+def local_path(info: dict) -> str:
+    return try_to_load_from_cache(info["repo"], info["check_file"])
 
 
 def download(info: dict, on_progress: Callable[[float], None]) -> None:

@@ -131,6 +131,18 @@ wheels = [
 ]
 
 [[package]]
+name = "cactus-needle"
+version = "3.1.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "huggingface-hub" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/4c/fc/9b5acdfe2ae4de15e453bba6b173e5b0e2ea6fa20a3b8a4c610feef7591c/cactus_needle-3.1.0.tar.gz", hash = "sha256:af2061f95333dab210b8457309bfd8945b68e1ada4a69067d26d01b49e1da6b7", size = 131537, upload-time = "2026-10-02T17:07:24.87Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/8e/7c/90891805111f2506ce7af54f98b99f92e0ff2d6f48053309b468f85e3180/cactus_needle-3.1.0-py3-none-any.whl", hash = "sha256:4101e693757d969782ce1d0d6aac9756bfca80a163a26f13c39e5c5aacecea68", size = 106372, upload-time = "2026-10-02T17:07:23.591Z" },
+]
+
+[[package]]
 name = "catalogue"
 version = "2.0.10"
 source = { registry = "https://pypi.org/simple" }
@@ -631,6 +643,7 @@ name = "koe"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
+    { name = "cactus-needle" },
     { name = "en-core-web-sm" },
     { name = "faster-whisper" },
     { name = "keyboard" },
@@ -645,6 +658,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
+    { name = "cactus-needle", specifier = ">=3.1.0" },
     { name = "en-core-web-sm", url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl" },
     { name = "faster-whisper" },
     { name = "keyboard" },
