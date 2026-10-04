@@ -1,0 +1,6 @@
+.buddy {
+  display: block;
+  flex: none;
+  overflow: visible;
+  filter: drop-shadow(0 1px 1px oklch(0 0 0 / 0.25));
+}

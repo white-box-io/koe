@@ -11,7 +11,7 @@ app/src-tauri/target/
 app/src-tauri/gen/
 
 # Old prototype UI: Mochi is all-rights-reserved (Coucou), never publish
-buddy/
+/buddy/
 
 # Local settings
 settings.local.toml
