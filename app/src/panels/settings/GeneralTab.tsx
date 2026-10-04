@@ -1,4 +1,5 @@
 import { Choice, Row, Toggle } from "../../components/ui/controls";
+import { sendToEngine } from "../../lib/bridge";
 import { useKoe } from "../../state/KoeProvider";
 import { HOTKEYS } from "./hotkeys";
 
@@ -16,6 +17,15 @@ export function GeneralTab() {
         <button className="settings__link" onClick={() => open("sessions")}>
           {sessionLabel}
         </button>
+      </Row>
+      <Row label="Speak replies">
+        <Toggle
+          on={settings.speakReplies}
+          onChange={(speakReplies) => {
+            updateSettings({ speakReplies });
+            if (!speakReplies) sendToEngine("stop");
+          }}
+        />
       </Row>
       <Row label="Live subtitles">
         <Toggle on={settings.subtitles} onChange={(subtitles) => updateSettings({ subtitles })} />

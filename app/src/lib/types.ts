@@ -8,6 +8,7 @@ export type Settings = {
   voice: string;
   speed: number;
   followSession: string;
+  speakReplies: boolean;
   subtitles: boolean;
   taskAlerts: boolean;
   soundEffects: boolean;
@@ -52,7 +53,7 @@ export type Task = {
   files: TouchedFile[];
 };
 
-export type ErrorKind = "mic_missing" | "gpu_fallback" | "download_failed" | "engine_crashed" | "no_session";
+export type ErrorKind = "mic_missing" | "gpu_fallback" | "download_failed" | "engine_crashed" | "no_session" | "model_failed";
 
 export type KoeError = { kind: ErrorKind; message: string; model?: string };
 

@@ -1,4 +1,5 @@
 use serde_json::{json, Value};
+use std::fs::File;
 use std::io::{BufRead, BufReader, Write};
 use std::os::windows::process::CommandExt;
 use std::path::PathBuf;
@@ -39,7 +40,7 @@ impl Engine {
             .current_dir(&root)
             .stdin(Stdio::piped())
             .stdout(Stdio::piped())
-            .stderr(Stdio::null())
+            .stderr(open_log().map(Stdio::from).unwrap_or_else(|_| Stdio::null()))
             .creation_flags(CREATE_NO_WINDOW)
             .spawn();
 
@@ -63,7 +64,8 @@ impl Engine {
                 }
             }
             if !stopping.load(Ordering::SeqCst) {
-                report_crash(&app, "The voice engine stopped unexpectedly.");
+                let reason = last_log_line().unwrap_or_else(|| "The voice engine stopped unexpectedly.".into());
+                report_crash(&app, &reason);
             }
         });
     }
@@ -90,6 +92,24 @@ impl Engine {
         let _ = app.emit("engine", json!({ "event": "loading", "stage": "restarting", "progress": 0.02 }));
         self.start(app, config);
     }
+}
+
+/// Engine errors go to %APPDATA%/koe/engine.log, replaced on each start.
+pub fn log_path() -> PathBuf {
+    dirs::config_dir().unwrap_or_default().join("koe").join("engine.log")
+}
+
+fn open_log() -> std::io::Result<File> {
+    let path = log_path();
+    if let Some(folder) = path.parent() {
+        std::fs::create_dir_all(folder)?;
+    }
+    File::create(path)
+}
+
+fn last_log_line() -> Option<String> {
+    let text = std::fs::read_to_string(log_path()).ok()?;
+    text.lines().rev().map(str::trim).find(|line| !line.is_empty()).map(String::from)
 }
 
 fn report_crash(app: &AppHandle, message: &str) {

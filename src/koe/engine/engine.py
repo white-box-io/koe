@@ -152,8 +152,8 @@ class Engine:
     def _on_speaking_changed(self, is_speaking: bool) -> None:
         emit("speaking", on=is_speaking)
 
-    def _on_sentence(self, sentence: str) -> None:
-        emit("sentence", text=sentence)
+    def _on_sentence(self, sentence: str, seconds: float) -> None:
+        emit("sentence", text=sentence, seconds=round(seconds, 2))
 
     def _level_loop(self) -> None:
         while True:
@@ -219,6 +219,7 @@ class Engine:
             changes.get("whisper_model", self.settings["whisper_model"]) != self.settings["whisper_model"]
             or changes.get("language", self.settings["language"]) != self.settings["language"]
         )
+        previous_model = self.settings["whisper_model"]
         self.settings.update(changes)
         if self.speaker:
             self.speaker.voice_id = self.settings["voice"]
@@ -230,19 +231,38 @@ class Engine:
             except Exception as error:
                 emit("error", kind="mic_missing", message=str(error))
         if needs_new_transcriber:
-            threading.Thread(target=self._reload_transcriber, daemon=True).start()
+            threading.Thread(target=self._reload_transcriber, args=(previous_model,), daemon=True).start()
 
-    def _reload_transcriber(self) -> None:
+    def _reload_transcriber(self, previous_model: str) -> None:
+        emit("loading", stage="loading hearing", progress=0.05)
+        try:
+            self._download_whisper()
+            self._load_transcriber()
+        except Exception as error:
+            self.settings["whisper_model"] = previous_model
+            emit("error", kind="model_failed", model=previous_model, message=str(error))
+        emit("ready", device=self.device)
+
+    def _download_whisper(self) -> None:
+        info = downloads.whisper_model_info(self.settings["whisper_model"])
+        if downloads.is_downloaded(info):
+            return
+
+        def report(fraction):
+            emit("download", model="whisper", progress=round(fraction, 3))
+            emit("loading", stage="downloading hearing", progress=round(0.05 + 0.8 * fraction, 3))
+
+        os.environ.pop("HF_HUB_OFFLINE", None)
+        try:
+            downloads.download(info, report)
+        finally:
+            self._mark_models_offline()
+
+    def _load_transcriber(self) -> None:
         from koe.engine.transcriber import Transcriber
 
-        emit("loading", stage="loading hearing", progress=0.5)
-        info = downloads.whisper_model_info(self.settings["whisper_model"])
-        if not downloads.is_downloaded(info):
-            os.environ.pop("HF_HUB_OFFLINE", None)
-            downloads.download(info, lambda fraction: emit("download", model="whisper", progress=round(fraction, 3)))
-            self._mark_models_offline()
+        emit("loading", stage="loading hearing", progress=0.9)
         self.transcriber = Transcriber(self.settings["whisper_model"], self.settings["language"], self.device)
-        emit("ready", device=self.device)
 
     def _cmd_retry_mic(self, command: dict) -> None:
         try:

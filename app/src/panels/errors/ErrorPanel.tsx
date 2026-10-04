@@ -28,6 +28,12 @@ const COPY: Record<KoeError["kind"], ErrorCopy> = {
     title: "Download failed",
     body: (error) => `The ${error.model ?? "voice"} model stopped downloading. It will resume where it left off.`,
   },
+  model_failed: {
+    icon: <AlertTriangle size={15} />,
+    tone: "amber",
+    title: "Couldn't switch model",
+    body: (error) => `That model didn't load, so Koe kept ${error.model ?? "the old one"}. It may need more GPU memory.`,
+  },
   mic_missing: {
     icon: <MicOff size={15} />,
     tone: "red",
@@ -65,6 +71,9 @@ export function ErrorPanel({ error }: { error: KoeError }) {
         <Button onClick={() => { dismiss(); restartEngine(); }}>Retry</Button>
         <Button kind="secondary" onClick={dismiss}>Cancel</Button>
       </>
+    ),
+    model_failed: (
+      <Button onClick={() => { updateSettings({ whisperModel: error.model ?? "small.en" }); dismiss(); }}>OK</Button>
     ),
     mic_missing: (
       <>

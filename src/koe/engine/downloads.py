@@ -1,6 +1,8 @@
+import io
 from typing import Callable
 
 from huggingface_hub import snapshot_download, try_to_load_from_cache
+from tqdm import tqdm
 
 MODELS = {
     "kokoro": {
@@ -25,25 +27,15 @@ def is_downloaded(info: dict) -> bool:
 
 
 def download(info: dict, on_progress: Callable[[float], None]) -> None:
-    class ProgressBar:
-        def __init__(self, *args, total=None, **kwargs):
-            self.total = total or 1
-            self.done = 0
+    class ProgressBar(tqdm):
+        def __init__(self, *args, **kwargs):
+            kwargs["file"] = io.StringIO()
+            super().__init__(*args, **kwargs)
 
         def update(self, amount=1):
-            self.done += amount
-            on_progress(min(self.done / self.total, 1.0))
-
-        def __enter__(self):
-            return self
-
-        def __exit__(self, *args):
-            on_progress(1.0)
-
-        def close(self):
-            on_progress(1.0)
-
-        def set_description(self, *args, **kwargs):
-            pass
+            super().update(amount)
+            if self.total:
+                on_progress(min(self.n / self.total, 1.0))
 
     snapshot_download(info["repo"], allow_patterns=info["files"], tqdm_class=ProgressBar)
+    on_progress(1.0)

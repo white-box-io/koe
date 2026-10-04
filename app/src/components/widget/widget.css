@@ -6,9 +6,7 @@
   background: linear-gradient(180deg, var(--bezel-top), var(--bezel-mid) 45%, var(--bezel-bottom));
   box-shadow:
     inset 0 1px 0 oklch(1 0 0 / 0.4),
-    inset 0 -1px 0 oklch(0 0 0 / 0.3),
-    0 0 18px -6px var(--glow),
-    var(--shadow);
+    inset 0 -1px 0 oklch(0 0 0 / 0.3);
   transition: box-shadow 300ms ease;
 }
 
@@ -25,7 +23,7 @@
   gap: 8px;
   height: 40px;
   min-width: 40px;
-  padding: 0 12px 0 5px;
+  padding: 0 12px 0 9px;
   border-radius: var(--radius-pill);
   background:
     linear-gradient(180deg, var(--glass-shine-top), var(--glass-shine-bottom)),
@@ -35,8 +33,10 @@
     inset 0 1px 3px oklch(0 0 0 / 0.5);
 }
 
-.widget__glass--compact {
-  padding: 0 5px;
+.widget__glass--compact,
+.widget__glass:has(> .buddy:only-child) {
+  width: 44px;
+  padding: 0;
   justify-content: center;
 }
 

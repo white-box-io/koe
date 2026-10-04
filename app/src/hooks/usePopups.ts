@@ -40,6 +40,8 @@ export function usePopups(state: KoeState, now: number) {
     if (!settings.setupDone) return { popup: { kind: "setup" }, until: Infinity };
     const blocking = blockingError(state);
     if (blocking) return { popup: { kind: "error", error: blocking }, until: Infinity };
+    const hasSubtitle = Boolean(state.heard || state.sentence);
+    if (settings.subtitles && hasSubtitle && (state.speaking || state.transcribing)) return { popup: { kind: "subtitles" }, until: Infinity };
     if (settings.taskAlerts && state.doneAt && state.task?.finishedAt) {
       const until = held(state.doneAt + DONE_POPUP_MS);
       if (now < until) return { popup: { kind: "done" }, until };

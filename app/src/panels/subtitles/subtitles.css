@@ -27,18 +27,16 @@
   font-size: 13.5px;
   font-weight: 500;
   line-height: 20px;
-  background: linear-gradient(90deg, white 50%, oklch(1 0 0 / 0.4) 50%);
-  background-size: 200% 100%;
-  background-position: 100% 0;
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-  animation: karaoke 3.2s linear forwards;
 }
 
-@keyframes karaoke {
+.subtitle__word {
+  color: oklch(1 0 0 / 0.35);
+  animation: word-spoken 0.18s ease-out forwards;
+}
+
+@keyframes word-spoken {
   to {
-    background-position: 0 0;
+    color: white;
   }
 }
 

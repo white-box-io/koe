@@ -99,6 +99,12 @@ fn apply_autostart(app: &AppHandle, enabled: bool) {
     let _ = if enabled { launcher.enable() } else { launcher.disable() };
 }
 
+fn speak_replies_on(app: &tauri::AppHandle) -> bool {
+    app.try_state::<AppState>()
+        .map(|state| state.settings.lock().unwrap().speak_replies)
+        .unwrap_or(true)
+}
+
 pub fn run() {
     let settings = settings::load();
     let engine = Arc::new(Engine::new());
@@ -116,7 +122,7 @@ pub fn run() {
                 let speaking_engine = engine.clone();
                 let event_handle = handle.clone();
                 let follower = Follower::start(settings.follow_session.clone(), move |event| {
-                    if event["kind"] == "reply" {
+                    if event["kind"] == "reply" && speak_replies_on(&event_handle) {
                         speaking_engine.send(serde_json::json!({ "cmd": "speak", "text": event["text"] }));
                     }
                     let _ = event_handle.emit("claude", event);

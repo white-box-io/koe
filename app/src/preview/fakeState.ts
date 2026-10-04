@@ -38,6 +38,7 @@ export const FAKE_STATE: KoeState = {
     voice: "af_heart",
     speed: 1.1,
     followSession: "auto",
+    speakReplies: true,
     subtitles: true,
     taskAlerts: true,
     soundEffects: false,
@@ -61,5 +62,5 @@ export const FAKE_STATE: KoeState = {
     { id: "am_michael", name: "Michael", style: "Deep", accent: "US", gender: "male" },
   ],
   heard: { text: "Can you make the save button a bit bigger?", at: Date.now() },
-  sentence: { text: "Sure! Making the save button twenty percent larger and keeping it centred.", at: Date.now() },
+  sentence: { text: "Sure! Making the save button twenty percent larger and keeping it centred.", seconds: 4, at: Date.now() },
 };

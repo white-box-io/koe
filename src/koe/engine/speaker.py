@@ -12,6 +12,7 @@ from koe.engine.voices import language_code_for
 KOKORO_SAMPLE_RATE = 24000
 LEVEL_WINDOW_SAMPLES = 1200
 LEVEL_BOOST = 5.0
+SENTENCE_BREAK = r"\n+|(?<=[.!?])\s+"
 
 
 class Speaker:
@@ -19,7 +20,7 @@ class Speaker:
         self,
         device: str,
         on_speaking_changed: Callable[[bool], None],
-        on_sentence: Callable[[str], None],
+        on_sentence: Callable[[str, float], None],
     ):
         self.device = device
         self.on_speaking_changed = on_speaking_changed
@@ -81,11 +82,11 @@ class Speaker:
     def _speak(self, text: str) -> None:
         stop_count_at_start = self.stop_count
         pipeline = self._pipeline_for(self.voice_id)
-        for sentence, _, audio in pipeline(text, voice=self.voice_id, speed=self.speed):
+        for sentence, _, audio in pipeline(text, voice=self.voice_id, speed=self.speed, split_pattern=SENTENCE_BREAK):
             if self.stop_count != stop_count_at_start:
                 break
-            self.on_sentence(sentence)
             self.playing_audio = np.asarray(audio, dtype=np.float32)
+            self.on_sentence(sentence, len(self.playing_audio) / KOKORO_SAMPLE_RATE)
             self.playing_since = time.monotonic()
             sd.play(self.playing_audio, KOKORO_SAMPLE_RATE)
             sd.wait()

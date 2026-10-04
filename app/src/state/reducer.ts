@@ -30,7 +30,7 @@ export type KoeState = {
   errors: KoeError[];
   session: SessionInfo | null | undefined;
   heard: { text: string; at: number } | null;
-  sentence: { text: string; at: number } | null;
+  sentence: { text: string; seconds: number; at: number } | null;
   task: Task | null;
   doneAt: number;
   panel: PanelName | null;
@@ -95,7 +95,7 @@ function engineReducer(state: KoeState, event: Record<string, unknown>): KoeStat
       };
     case "recording":
       return event.on
-        ? { ...state, recording: true, recordingStartedAt: Date.now(), panel: null }
+        ? { ...state, recording: true, recordingStartedAt: Date.now(), panel: null, sentence: null, heard: null }
         : { ...state, recording: false };
     case "transcribing":
       return { ...state, transcribing: true };
@@ -104,7 +104,10 @@ function engineReducer(state: KoeState, event: Record<string, unknown>): KoeStat
     case "speaking":
       return { ...state, speaking: Boolean(event.on) };
     case "sentence":
-      return { ...state, sentence: { text: event.text as string, at: Date.now() } };
+      return {
+        ...state,
+        sentence: { text: event.text as string, seconds: (event.seconds as number) ?? 3, at: Date.now() },
+      };
     case "stopped":
       return { ...state, speaking: false, stoppedAt: Date.now() };
     case "paused":

@@ -82,8 +82,8 @@ export function Widget({ mode, now, onDragStart }: WidgetProps) {
       onMouseLeave={() => dispatch({ type: "hover", on: false })}
     >
       <div className={`widget__glass ${isCompact ? "widget__glass--compact" : ""}`}>
-        <Buddy face={face} size={30} alive squashKey={poke.count + state.stoppedAt} />
-        {showQuick ? <QuickActions /> : <WidgetContent mode={mode} now={now} />}
+        <Buddy face={face} size={38} alive squashKey={poke.count + state.stoppedAt} />
+        {showQuick ? <QuickActions /> : !isCompact && <WidgetContent mode={mode} now={now} />}
       </div>
     </div>
   );
