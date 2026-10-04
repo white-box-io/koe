@@ -10,14 +10,10 @@ dependencies = [
     "kokoro>=0.9",
     "numpy",
     "pyperclip",
-    "pyside6",
     "sounddevice",
     "soundfile",
     "torch",
 ]
-
-[project.scripts]
-koe = "koe.app:main"
 
 [tool.uv.sources]
 torch = { index = "pytorch-cu124" }

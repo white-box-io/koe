@@ -26,6 +26,9 @@ export function AboutTab() {
         <ExternalLink size={13} />
       </button>
       <span className="settings__note settings__note--center">Voice by Kokoro · Hearing by Whisper</span>
+      <span className="settings__note settings__note--center">
+        Independent project, not affiliated with or endorsed by Anthropic.
+      </span>
     </>
   );
 }
